@@ -1,20 +1,31 @@
 version: '3.4'
 
 services:
-  bookify.api:
-    image: ${DOCKER_REGISTRY-}bookifyapi
-    container_name: Bookify.Api
+  desafio-mottu.api:
+    image: ${DOCKER_REGISTRY-}desafioapi
+    container_name: DesafioMottu.Api
     build:
       context: .
-      dockerfile: src/Bookify.Api/Dockerfile
-    depends_on:
-      - bookify-db
-
-  bookify-db:
-    image: postgres:latest
-    container_name: Bookify.Db
+      dockerfile: src/DesafioMottu.Api/Dockerfile
     environment:
-      - POSTGRES_DB=bookify
+      - PUBSUB_EMULATOR_HOST=desafio-mottu-pubsub:8085
+      - PUBSUB_PROJECT_ID=desafio-backend-mottu
+    volumes:
+      - ./.containers/app/Files/DriversLicenses:/app/Files/DriversLicenses
+    depends_on:
+      desafio-mottu-db:
+        condition: service_healthy
+
+  desafio-mottu-db:
+    image: postgres:17.0
+    container_name: DesafioMottu.Db
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+    environment:
+      - POSTGRES_DB=desafiomottu
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=postgres
     volumes:
@@ -22,31 +33,25 @@ services:
     ports:
       - 5432:5432
 
-  bookify-idp:
-    image: quay.io/keycloak/keycloak:latest
-    container_name: Bookify.Identity
-    command: start-dev --import-realm
-    environment:
-      - KEYCLOAK_ADMIN=admin
-      - KEYCLOAK_ADMIN_PASSWORD=admin
-    volumes:
-      - ./.containers/identity:/opt/keycloak/data
-      - ./.files/bookify-realm-export.json:/opt/keycloak/data/import/realm.json
-    ports:
-      - 18080:8080
-
-  bookify-seq:
-    image: datalust/seq:latest
-    container_name: Bookify.Seq
+  desafio-mottu-seq:
+    image: datalust/seq:2024.3
+    container_name: DesafioMottu.Seq
     environment:
       - ACCEPT_EULA=Y
     ports:
       - 5341:5341
       - 8081:80
 
-  bookify-redis:
-    image: redis:latest
-    container_name: Bookify.Redis
+  desafio-mottu-redis:
+    image: redis:7.4.0
+    container_name: DesafioMottu.Redis
     restart: always
     ports:
       - '6379:6379'
+
+  desafio-mottu-pubsub:
+    image: google/cloud-sdk:494.0.0
+    container_name: pubsub
+    command: "gcloud beta emulators pubsub start --project=desafio-backend-mottu --host-port=0.0.0.0:8085"
+    ports:
+      - 8085:8085
