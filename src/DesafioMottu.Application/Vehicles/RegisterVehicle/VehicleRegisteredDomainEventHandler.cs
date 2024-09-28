@@ -2,6 +2,7 @@
 using DesafioMottu.Domain.Vehicles;
 using DesafioMottu.Domain.Vehicles.Events;
 using MediatR;
+using Newtonsoft.Json;
 
 namespace DesafioMottu.Application.Rentals.ReserveRental;
 
@@ -27,6 +28,8 @@ internal sealed class VehicleRegisteredDomainEventHandler : INotificationHandler
             return;
         }
 
-        await _eventBus.PublishAsync(motorcycle, cancellationToken);
+        dynamic vehicleData = new { Id = motorcycle.Id, Model = motorcycle.Model.Value, Year = motorcycle.Year, LicensePlateNumber = motorcycle.LicensePlate.Number };
+
+        await _eventBus.PublishAsync(JsonConvert.SerializeObject(vehicleData), cancellationToken);
     }
 }

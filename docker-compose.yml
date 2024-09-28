@@ -55,3 +55,31 @@ services:
     command: "gcloud beta emulators pubsub start --project=desafio-backend-mottu --host-port=0.0.0.0:8085"
     ports:
       - 8085:8085
+
+  desafio-mottu-consumer:
+    image: ${DOCKER_REGISTRY-}desafioconsumer
+    container_name: DesafioMottu.Consumer
+    build:
+      context: .
+      dockerfile: src/Functions/DesafioMottu.Consumer/Dockerfile
+    environment:
+      - PUBSUB_EMULATOR_HOST=desafio-mottu-pubsub:8085
+      - PUBSUB_PROJECT_ID=desafio-backend-mottu
+      - MONGODB_URI=mongodb://user:pass@consumer-db:27017/
+    depends_on:
+      - desafio-mottu-pubsub
+      - consumer-db
+
+  consumer-db:
+    image: mongo:8.0
+    container_name: DesafioMottu.Consumer.Db
+    environment:
+      - MONGO_INITDB_ROOT_USERNAME=user
+      - MONGO_INITDB_ROOT_PASSWORD=pass
+      - MONGO_INITDB_DATABASE=desafiomottu
+    volumes:
+      - type: bind
+        source: ./.containers/data
+        target: /data/db
+    ports:
+      - 27017:27017

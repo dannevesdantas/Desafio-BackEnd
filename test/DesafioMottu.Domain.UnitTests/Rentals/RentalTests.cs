@@ -38,7 +38,8 @@ public class RentalTests : BaseTest
     {
         // Arrange
         var user = User.Create(UserData.Name, UserData.Cnpj, UserData.BirthDate);
-        var driversLicense = Domain.DriversLicense.DriversLicense.Create(user.Id, "68234859262", new List<char>() { 'B' }); // Somente entregadores habilitados na categoria A podem efetuar uma locação
+        // Somente entregadores habilitados na categoria A podem efetuar uma locação
+        var driversLicense = Domain.DriversLicense.DriversLicense.Create(user.Id, "68234859262", new List<char>() { 'B' });
         user.SetDriversLicense(driversLicense);
         var duration = DateRange.Create(new DateTime(2024, 1, 1), new DateTime(2024, 1, 7));
         DateTime predictedEndDate = duration.End;

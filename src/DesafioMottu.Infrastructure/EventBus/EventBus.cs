@@ -1,10 +1,8 @@
 ﻿using DesafioMottu.Application.EventBus;
-using DesafioMottu.Domain.Abstractions;
 using Google.Api.Gax;
 using Google.Cloud.PubSub.V1;
 using Grpc.Core;
 using Microsoft.Extensions.Configuration;
-using Newtonsoft.Json;
 
 namespace Evently.Common.Infrastructure.EventBus;
 
@@ -18,8 +16,7 @@ internal sealed class EventBus : IEventBus
         _configuration = configuration;
     }
 
-    public async Task PublishAsync<T>(T entity, CancellationToken cancellationToken = default)
-        where T : Entity
+    public async Task PublishAsync(string message, CancellationToken cancellationToken = default)
     {
         string projectId = _configuration["PubSub:ProjectId"];
         string topicId = _configuration["PubSub:TopicId"];
@@ -30,7 +27,17 @@ internal sealed class EventBus : IEventBus
         }.BuildAsync();
 
         TopicName topicName = new TopicName(projectId, topicId);
-        CreateTopic(projectId, topicId);
+        Topic topic = null;
+
+        try
+        {
+            topic = publisherService.CreateTopic(topicName);
+            Console.WriteLine($"Topic {topic.Name} created.");
+        }
+        catch (RpcException e) when (e.Status.StatusCode == StatusCode.AlreadyExists)
+        {
+            Console.WriteLine($"Topic {topicName} already exists.");
+        }
 
         PublisherClient publisher = await new PublisherClientBuilder
         {
@@ -38,25 +45,7 @@ internal sealed class EventBus : IEventBus
             EmulatorDetection = EmulatorDetection.EmulatorOrProduction
         }.BuildAsync();
 
-        await publisher.PublishAsync(JsonConvert.SerializeObject(entity));
+        await publisher.PublishAsync(message);
         await publisher.ShutdownAsync(TimeSpan.FromSeconds(15));
-    }
-
-    private static Topic CreateTopic(string projectId, string topicId)
-    {
-        PublisherServiceApiClient publisher = PublisherServiceApiClient.Create();
-        var topicName = TopicName.FromProjectTopic(projectId, topicId);
-        Topic topic = null;
-
-        try
-        {
-            topic = publisher.CreateTopic(topicName);
-            Console.WriteLine($"Topic {topic.Name} created.");
-        }
-        catch (RpcException e) when (e.Status.StatusCode == StatusCode.AlreadyExists)
-        {
-            Console.WriteLine($"Topic {topicName} already exists.");
-        }
-        return topic;
     }
 }

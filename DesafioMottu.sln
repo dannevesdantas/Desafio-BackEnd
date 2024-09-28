@@ -33,6 +33,10 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		Directory.Build.props = Directory.Build.props
 	EndProjectSection
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Functions", "Functions", "{72BA92CA-CBA7-41E3-8A68-4D9BF00A7A9A}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DesafioMottu.Consumer", "src\Functions\DesafioMottu.Consumer\DesafioMottu.Consumer.csproj", "{D2C53541-1A65-4F4D-B652-7655AC4B9BA4}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -79,6 +83,10 @@ Global
 		{E2BABD95-C6B2-4DC3-BEBB-BA5A4FB16580}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{E2BABD95-C6B2-4DC3-BEBB-BA5A4FB16580}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{E2BABD95-C6B2-4DC3-BEBB-BA5A4FB16580}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D2C53541-1A65-4F4D-B652-7655AC4B9BA4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D2C53541-1A65-4F4D-B652-7655AC4B9BA4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D2C53541-1A65-4F4D-B652-7655AC4B9BA4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D2C53541-1A65-4F4D-B652-7655AC4B9BA4}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -93,6 +101,8 @@ Global
 		{E7F6A97A-7335-4568-80BB-0944F5A5E8FE} = {280A8A34-4FED-4ADE-ACDE-8A052F516543}
 		{998E97E0-48F5-4FBE-9535-CBD074D3226B} = {280A8A34-4FED-4ADE-ACDE-8A052F516543}
 		{E2BABD95-C6B2-4DC3-BEBB-BA5A4FB16580} = {280A8A34-4FED-4ADE-ACDE-8A052F516543}
+		{72BA92CA-CBA7-41E3-8A68-4D9BF00A7A9A} = {D97FC30F-7D4C-4EB5-9784-1F403E0CA7CF}
+		{D2C53541-1A65-4F4D-B652-7655AC4B9BA4} = {72BA92CA-CBA7-41E3-8A68-4D9BF00A7A9A}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {7886086E-5FDE-4346-9331-C3CEE77E1E7A}

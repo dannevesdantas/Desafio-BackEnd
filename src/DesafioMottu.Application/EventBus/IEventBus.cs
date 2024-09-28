@@ -1,9 +1,6 @@
-﻿using DesafioMottu.Domain.Abstractions;
-
-namespace DesafioMottu.Application.EventBus;
+﻿namespace DesafioMottu.Application.EventBus;
 
 public interface IEventBus
 {
-    Task PublishAsync<T>(T entity, CancellationToken cancellationToken = default)
-        where T : Entity;
+    Task PublishAsync(string message, CancellationToken cancellationToken = default);
 }

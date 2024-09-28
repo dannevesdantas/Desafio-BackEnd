@@ -22,17 +22,20 @@ public class PricingService
             totalPrice += regularPrice;
         }
 
-        if (returnedOnUtc.Date < predictedEndDate.Date) // Quando a data informada for inferior a data prevista do término
+        // Quando a data informada for inferior a data prevista do término
+        if (returnedOnUtc.Date < predictedEndDate.Date)
         {
             // será cobrado o valor das diárias e uma multa adicional
             int notEffectiveDaysCount = (predictedEndDate.Date - returnedOnUtc.Date).Days;
             int effectiveDaysCount = (returnedOnUtc.Date - period.Start.Date).Days + 1;
             decimal effectiveDaysPrice = effectiveDaysCount * plan.DailyPrice;
-            decimal notEffectiveDaysFee = notEffectiveDaysCount * plan.DailyPrice * plan.DailyFeePercentage; // Para plano de X dias o valor da multa é de X% sobre o valor das diárias não efetivadas.
+            // Para plano de X dias o valor da multa é de X% sobre o valor das diárias não efetivadas.
+            decimal notEffectiveDaysFee = notEffectiveDaysCount * plan.DailyPrice * plan.DailyFeePercentage;
             totalPrice += effectiveDaysPrice + notEffectiveDaysFee;
         }
 
-        if (returnedOnUtc.Date > predictedEndDate.Date) // Quando a data informada for superior a data prevista do término
+        // Quando a data informada for superior a data prevista do término
+        if (returnedOnUtc.Date > predictedEndDate.Date)
         {
             // será cobrado um valor adicional de R$50,00 por diária adicional.
             int exceededDaysCount = (returnedOnUtc.Date - predictedEndDate.Date).Days;
