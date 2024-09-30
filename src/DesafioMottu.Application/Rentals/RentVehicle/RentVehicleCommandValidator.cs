@@ -12,12 +12,18 @@ internal class RentVehicleCommandValidator : AbstractValidator<RentVehicleComman
 
         RuleFor(c => c.StartDate).NotEmpty();
 
-        RuleFor(c => c.EndDate).NotEmpty();
+        RuleFor(c => c.EndDate)
+            .NotEmpty()
+            .GreaterThan(c => c.StartDate);
 
-        RuleFor(c => c.PredictedEndDate).NotEmpty();
+        RuleFor(c => c.PredictedEndDate)
+            .NotEmpty()
+            .GreaterThan(c => c.StartDate);
 
         RuleFor(c => c.StartDate.Date).Equal(DateTime.Now.AddDays(1).Date);
 
-        RuleFor(c => c.StartDate).LessThan(c => c.EndDate);
+        RuleFor(c => c.Plan)
+            .NotEmpty()
+            .GreaterThan(0);
     }
 }

@@ -8,7 +8,7 @@ public sealed class RentalResponse
 
     public decimal valor_diaria { get; init; }
 
-    public decimal valor_total { get; init; }
+    public decimal? valor_final { get; init; }
 
     public Guid entregador_id { get; init; }
 

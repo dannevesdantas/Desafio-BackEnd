@@ -25,7 +25,7 @@ internal sealed class GetRentalQueryHandler : IQueryHandler<GetRentalQuery, Rent
                 id AS identificador,
                 plan_days AS plano,
                 plan_daily_price AS valor_diaria,
-                total_price_amount AS valor_total,
+                total_price_amount AS valor_final,
                 user_id AS entregador_id,
                 vehicle_id AS moto_id,
                 duration_start AS data_inicio,

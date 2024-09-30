@@ -1,6 +1,9 @@
-﻿using DesafioMottu.Domain.Abstractions;
+﻿using System.Numerics;
+using DesafioMottu.Domain.Abstractions;
+using DesafioMottu.Domain.DriversLicense;
 using DesafioMottu.Domain.Rentals.Events;
 using DesafioMottu.Domain.Shared;
+using MediatR;
 
 namespace DesafioMottu.Domain.Rentals;
 
@@ -66,6 +69,13 @@ public sealed class Rental : Entity
             return Result.Failure<Rental>(legalRequirementsResult.Error);
         }
 
+        Result endDateVerificationResult = VerifyEndDateMeetPlan(duration, plan);
+
+        if (endDateVerificationResult.IsFailure)
+        {
+            return Result.Failure<Rental>(endDateVerificationResult.Error);
+        }
+
         var rental = new Rental(
             Guid.NewGuid(),
             userId,
@@ -83,6 +93,19 @@ public sealed class Rental : Entity
         return rental;
     }
 
+    private static Result VerifyEndDateMeetPlan(DateRange duration, Plan plan)
+    {
+        DateOnly providedEndDate = DateOnly.FromDateTime(duration.End);
+        DateOnly calculatedEndDate = DateOnly.FromDateTime(duration.Start.AddDays(plan.Days)).AddDays(-1);
+
+        if (providedEndDate != calculatedEndDate)
+        {
+            return Result.Failure<Rental>(RentalErrors.InvalidEndDate);
+        }
+
+        return Result.Success();
+    }
+
     private static Result<DriversLicense.DriversLicense> VerifyLicenseLegalRequirements(DriversLicense.DriversLicense driversLicense)
     {
         if (!driversLicense.Types.Contains('A'))
@@ -95,6 +118,16 @@ public sealed class Rental : Entity
 
     public Result Return(DateTime utcNow, PricingService pricingService)
     {
+        if (utcNow < Duration.Start)
+        {
+            return Result.Failure<Guid>(RentalErrors.TooEarly);
+        }
+
+        if (ReturnedOnUtc is not null)
+        {
+            return Result.Failure<Guid>(RentalErrors.AlreadyReturned);
+        }
+
         ReturnedOnUtc = utcNow;
 
         PricingDetails pricingDetails = pricingService.CalculatePrice(Duration, PredictedEndDate, ReturnedOnUtc.Value, Plan);

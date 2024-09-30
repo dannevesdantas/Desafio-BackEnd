@@ -6,5 +6,5 @@ public static class PlanErrors
 {
     public static readonly Error NotFound = new(
         "Plan.NotFound",
-        "A plan with the specified number of days was not found");
+        "Nenhum plano com a quantidade de dias especificada foi encontrado");
 }

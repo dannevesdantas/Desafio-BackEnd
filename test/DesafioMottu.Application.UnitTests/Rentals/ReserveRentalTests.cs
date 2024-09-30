@@ -21,8 +21,8 @@ public class ReserveRentalTests
     private static readonly RentVehicleCommand Command = new(Guid.NewGuid(),
         Guid.NewGuid(),
         new DateTime(2024, 1, 1),
-        new DateTime(2024, 1, 10),
-        new DateTime(2024, 1, 10),
+        new DateTime(2024, 1, 7),
+        new DateTime(2024, 1, 7),
         7);
 
     private readonly RentVehicleCommandHandler _handler;
