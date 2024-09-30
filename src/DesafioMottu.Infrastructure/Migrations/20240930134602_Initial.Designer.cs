@@ -13,7 +13,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace DesafioMottu.Infrastructure.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20240929203526_Initial")]
+    [Migration("20240930134602_Initial")]
     partial class Initial
     {
         /// <inheritdoc />
@@ -79,10 +79,6 @@ namespace DesafioMottu.Infrastructure.Migrations
                         .HasColumnType("timestamp without time zone")
                         .HasColumnName("created_on_utc");
 
-                    b.Property<Guid>("MotoId")
-                        .HasColumnType("uuid")
-                        .HasColumnName("moto_id");
-
                     b.Property<DateTime>("PredictedEndDate")
                         .HasColumnType("timestamp without time zone")
                         .HasColumnName("predicted_end_date");
@@ -95,6 +91,10 @@ namespace DesafioMottu.Infrastructure.Migrations
                         .HasColumnType("uuid")
                         .HasColumnName("user_id");
 
+                    b.Property<Guid>("VehicleId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("vehicle_id");
+
                     b.Property<uint>("Version")
                         .IsConcurrencyToken()
                         .ValueGeneratedOnAddOrUpdate()
@@ -104,11 +104,11 @@ namespace DesafioMottu.Infrastructure.Migrations
                     b.HasKey("Id")
                         .HasName("pk_rentals");
 
-                    b.HasIndex("MotoId")
-                        .HasDatabaseName("ix_rentals_moto_id");
-
                     b.HasIndex("UserId")
                         .HasDatabaseName("ix_rentals_user_id");
+
+                    b.HasIndex("VehicleId")
+                        .HasDatabaseName("ix_rentals_vehicle_id");
 
                     b.ToTable("rentals", (string)null);
                 });
@@ -245,19 +245,19 @@ namespace DesafioMottu.Infrastructure.Migrations
 
             modelBuilder.Entity("DesafioMottu.Domain.Rentals.Rental", b =>
                 {
-                    b.HasOne("DesafioMottu.Domain.Vehicles.Vehicle", null)
-                        .WithMany()
-                        .HasForeignKey("MotoId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired()
-                        .HasConstraintName("fk_rentals_vehicle_moto_id");
-
                     b.HasOne("DesafioMottu.Domain.Users.User", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired()
                         .HasConstraintName("fk_rentals_user_user_id");
+
+                    b.HasOne("DesafioMottu.Domain.Vehicles.Vehicle", null)
+                        .WithMany()
+                        .HasForeignKey("VehicleId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired()
+                        .HasConstraintName("fk_rentals_vehicle_vehicle_id");
 
                     b.OwnsOne("DesafioMottu.Domain.Rentals.DateRange", "Duration", b1 =>
                         {

@@ -1,4 +1,4 @@
-﻿namespace DesafioMottu.Api.Controllers.Motos;
+﻿namespace DesafioMottu.Api.Controllers.Vehicles;
 
 public sealed record RegisterVehicleRequest(
     int ano,

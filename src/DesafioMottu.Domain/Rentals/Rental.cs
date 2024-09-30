@@ -10,7 +10,7 @@ public sealed class Rental : Entity
 
     private Rental(Guid id,
         Guid userId,
-        Guid motoId,
+        Guid vehicleId,
         DateRange duration,
         DateTime predictedEndDate,
         Plan plan,
@@ -19,7 +19,7 @@ public sealed class Rental : Entity
         : base(id)
     {
         UserId = userId;
-        MotoId = motoId;
+        VehicleId = vehicleId;
         Duration = duration;
         PredictedEndDate = predictedEndDate;
         Plan = plan;
@@ -33,7 +33,7 @@ public sealed class Rental : Entity
 
     public Guid UserId { get; private set; }
 
-    public Guid MotoId { get; private set; }
+    public Guid VehicleId { get; private set; }
 
     public DateRange Duration { get; private set; }
 
@@ -53,7 +53,7 @@ public sealed class Rental : Entity
 
     public static Result<Rental> Reserve(Guid userId,
         DriversLicense.DriversLicense userDriversLicense,
-        Vehicles.Vehicle moto,
+        Vehicles.Vehicle vehicle,
         DateRange duration,
         DateTime predictedEndDate,
         Plan plan,
@@ -66,21 +66,21 @@ public sealed class Rental : Entity
             return Result.Failure<Rental>(legalRequirementsResult.Error);
         }
 
-        var locacao = new Rental(
+        var rental = new Rental(
             Guid.NewGuid(),
             userId,
-            moto.Id,
+            vehicle.Id,
             duration,
             predictedEndDate,
             plan,
             null,
             utcNow);
 
-        moto.LastRentedOnUtc = utcNow;
+        vehicle.LastRentedOnUtc = utcNow;
 
-        locacao.RaiseDomainEvent(new RentalReservedDomainEvent(locacao.Id));
+        rental.RaiseDomainEvent(new VehicleRentedDomainEvent(rental.Id));
 
-        return locacao;
+        return rental;
     }
 
     private static Result<DriversLicense.DriversLicense> VerifyLicenseLegalRequirements(DriversLicense.DriversLicense driversLicense)
@@ -101,7 +101,7 @@ public sealed class Rental : Entity
 
         TotalPrice = pricingDetails.TotalPrice;
 
-        RaiseDomainEvent(new RentalReturnedDomainEvent(Id));
+        RaiseDomainEvent(new VehicleReturnedDomainEvent(Id));
 
         return Result.Success();
     }

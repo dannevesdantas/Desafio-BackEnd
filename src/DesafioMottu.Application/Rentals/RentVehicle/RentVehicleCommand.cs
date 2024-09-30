@@ -1,10 +1,10 @@
 ﻿using DesafioMottu.Application.Abstractions.Messaging;
 
-namespace DesafioMottu.Application.Rentals.ReserveRental;
+namespace DesafioMottu.Application.Rentals.RentVehicle;
 
-public sealed record ReserveRentalCommand(
+public sealed record RentVehicleCommand(
     Guid UserId,
-    Guid MotoId,
+    Guid VehicleId,
     DateTime StartDate,
     DateTime EndDate,
     DateTime PredictedEndDate,

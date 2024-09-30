@@ -1,33 +1,34 @@
 ﻿using Asp.Versioning;
 using DesafioMottu.Application.Rentals.GetRental;
-using DesafioMottu.Application.Rentals.ReserveRental;
-using DesafioMottu.Application.Rentals.ReturnRental;
+using DesafioMottu.Application.Rentals.RentVehicle;
+using DesafioMottu.Application.Rentals.ReturnVehicle;
 using DesafioMottu.Domain.Abstractions;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Swashbuckle.AspNetCore.Annotations;
 
-namespace DesafioMottu.Api.Controllers.Locacao;
+namespace DesafioMottu.Api.Controllers.Rentals;
 
 [ApiController]
 [ApiVersionNeutral]
+[Tags("Locação")]
 [Route("locacao")]
-public class LocacaoController : ControllerBase
+public class RentalsController : ControllerBase
 {
     private readonly ISender _sender;
 
-    public LocacaoController(ISender sender)
+    public RentalsController(ISender sender)
     {
         _sender = sender;
     }
 
     [HttpPost]
     [SwaggerOperation(Summary = "Alugar uma moto")]
-    public async Task<IActionResult> ReserveLocacao(
-        ReserveRentalRequest request,
+    public async Task<IActionResult> RentVehicle(
+        RentVehicleRequest request,
         CancellationToken cancellationToken)
     {
-        var command = new ReserveRentalCommand(
+        var command = new RentVehicleCommand(
             request.entregador_id,
             request.moto_id,
             request.data_inicio,
@@ -42,12 +43,12 @@ public class LocacaoController : ControllerBase
             return BadRequest(result.Error);
         }
 
-        return CreatedAtAction(nameof(GetLocacao), new { id = result.Value }, result.Value);
+        return CreatedAtAction(nameof(GetRentalData), new { id = result.Value }, result.Value);
     }
 
     [HttpGet("{id}")]
     [SwaggerOperation(Summary = "Consultar locação por id")]
-    public async Task<IActionResult> GetLocacao([FromRoute] Guid id, CancellationToken cancellationToken)
+    public async Task<IActionResult> GetRentalData([FromRoute] Guid id, CancellationToken cancellationToken)
     {
         var query = new GetRentalQuery(id);
 
@@ -58,12 +59,12 @@ public class LocacaoController : ControllerBase
 
     [HttpPut("{id}/devolucao")]
     [SwaggerOperation(Summary = "Informar data de devolução e calcular valor")]
-    public async Task<IActionResult> SubmitDriversLicense(
+    public async Task<IActionResult> ReturnVehicle(
         [FromRoute] Guid id,
-        ReturnRentalRequest request,
+        ReturnVehicleRequest request,
         CancellationToken cancellationToken)
     {
-        var command = new ReturnRentalCommand(id, request.data_devolucao);
+        var command = new ReturnVehicleCommand(id, request.data_devolucao);
 
         Result<Guid> result = await _sender.Send(command, cancellationToken);
 

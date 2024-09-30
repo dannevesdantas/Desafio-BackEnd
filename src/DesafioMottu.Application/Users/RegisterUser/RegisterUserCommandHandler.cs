@@ -50,7 +50,7 @@ internal sealed class RegisterUserCommandHandler : ICommandHandler<RegisterUserC
 
         var driversLicense = DriversLicense.Create(newUser.Id,
             request.DriversLicenseNumber,
-        request.DriversLicenseTypes);
+        request.DriversLicenseClasses);
 
         if (request.DriversLicenseImage is not null)
         {

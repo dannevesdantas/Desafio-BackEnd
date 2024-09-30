@@ -4,7 +4,7 @@ using DesafioMottu.Domain.Vehicles.Events;
 using MediatR;
 using Newtonsoft.Json;
 
-namespace DesafioMottu.Application.Rentals.ReserveRental;
+namespace DesafioMottu.Application.Rentals.RentVehicle;
 
 internal sealed class VehicleRegisteredDomainEventHandler : INotificationHandler<VehicleRegisteredDomainEvent>
 {
@@ -12,23 +12,23 @@ internal sealed class VehicleRegisteredDomainEventHandler : INotificationHandler
     private readonly IEventBus _eventBus;
 
     public VehicleRegisteredDomainEventHandler(
-        IVehicleRepository motorcycleRepository,
+        IVehicleRepository vehicleRepository,
         IEventBus eventBus)
     {
-        _vehicleRepository = motorcycleRepository;
+        _vehicleRepository = vehicleRepository;
         _eventBus = eventBus;
     }
 
     public async Task Handle(VehicleRegisteredDomainEvent notification, CancellationToken cancellationToken)
     {
-        Vehicle? motorcycle = await _vehicleRepository.GetByIdAsync(notification.MotoId, cancellationToken);
+        Vehicle? vehicle = await _vehicleRepository.GetByIdAsync(notification.VehicleId, cancellationToken);
 
-        if (motorcycle is null)
+        if (vehicle is null)
         {
             return;
         }
 
-        dynamic vehicleData = new { Id = motorcycle.Id, Model = motorcycle.Model.Value, Year = motorcycle.Year, LicensePlateNumber = motorcycle.LicensePlate.Number };
+        dynamic vehicleData = new { Id = vehicle.Id, Model = vehicle.Model.Value, Year = vehicle.Year, LicensePlateNumber = vehicle.LicensePlate.Number };
 
         await _eventBus.PublishAsync(JsonConvert.SerializeObject(vehicleData), cancellationToken);
     }

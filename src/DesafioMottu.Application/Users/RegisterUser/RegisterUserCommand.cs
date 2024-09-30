@@ -8,5 +8,5 @@ public sealed record RegisterUserCommand(
     string Cnpj,
     DateOnly BirthDate,
     string DriversLicenseNumber,
-    List<char> DriversLicenseTypes,
+    List<char> DriversLicenseClasses,
     Image? DriversLicenseImage) : ICommand<Guid>;

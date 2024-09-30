@@ -6,13 +6,13 @@ public static class RentalErrors
 {
     public static readonly Error NotFound = new(
         "Rental.Found",
-        "The rental with the specified identifier was not found");
+        "O aluguel com o identificador especificado não foi encontrado");
 
     public static readonly Error Overlap = new(
         "Rental.Overlap",
-        "The current rental is overlapping with an existing one");
+        "O aluguel atual coincide com outro já existente");
 
     public static readonly Error DiversLicenseNotAllowed = new(
         "Rental.DiversLicenseNotAllowed",
-        "The user diver's license doesn't meet legal requirements");
+        "A carteira de motorista do usuário não atende aos requisitos legais");
 }

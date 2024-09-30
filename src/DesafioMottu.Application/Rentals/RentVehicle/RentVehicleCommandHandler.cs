@@ -7,34 +7,34 @@ using DesafioMottu.Domain.Rentals;
 using DesafioMottu.Domain.Users;
 using DesafioMottu.Domain.Vehicles;
 
-namespace DesafioMottu.Application.Rentals.ReserveRental;
+namespace DesafioMottu.Application.Rentals.RentVehicle;
 
-internal sealed class ReserveRentalCommandHandler : ICommandHandler<ReserveRentalCommand, Guid>
+internal sealed class RentVehicleCommandHandler : ICommandHandler<RentVehicleCommand, Guid>
 {
     private readonly IUserRepository _userRepository;
     private readonly IDriversLicenseRepository _driversLicenseRepository;
     private readonly IVehicleRepository _vehicleRepository;
-    private readonly IRentalRepository _locacaoRepository;
+    private readonly IRentalRepository _rentalRepository;
     private readonly IUnitOfWork _unitOfWork;
     private readonly IDateTimeProvider _dateTimeProvider;
 
-    public ReserveRentalCommandHandler(
+    public RentVehicleCommandHandler(
         IUserRepository userRepository,
         IDriversLicenseRepository driversLicenseRepository,
-        IVehicleRepository motoRepository,
-        IRentalRepository locacaoRepository,
+        IVehicleRepository vehicleRepository,
+        IRentalRepository rentalRepository,
         IUnitOfWork unitOfWork,
         IDateTimeProvider dateTimeProvider)
     {
         _userRepository = userRepository;
         _driversLicenseRepository = driversLicenseRepository;
-        _vehicleRepository = motoRepository;
-        _locacaoRepository = locacaoRepository;
+        _vehicleRepository = vehicleRepository;
+        _rentalRepository = rentalRepository;
         _unitOfWork = unitOfWork;
         _dateTimeProvider = dateTimeProvider;
     }
 
-    public async Task<Result<Guid>> Handle(ReserveRentalCommand request, CancellationToken cancellationToken)
+    public async Task<Result<Guid>> Handle(RentVehicleCommand request, CancellationToken cancellationToken)
     {
         User? user = await _userRepository.GetByIdAsync(request.UserId, cancellationToken);
 
@@ -50,7 +50,7 @@ internal sealed class ReserveRentalCommandHandler : ICommandHandler<ReserveRenta
             return Result.Failure<Guid>(UserErrors.Unlicensed);
         }
 
-        Vehicle? vehicle = await _vehicleRepository.GetByIdAsync(request.MotoId, cancellationToken);
+        Vehicle? vehicle = await _vehicleRepository.GetByIdAsync(request.VehicleId, cancellationToken);
 
         if (vehicle is null)
         {
@@ -59,7 +59,7 @@ internal sealed class ReserveRentalCommandHandler : ICommandHandler<ReserveRenta
 
         var duration = DateRange.Create(request.StartDate, request.EndDate);
 
-        if (await _locacaoRepository.IsOverlappingAsync(vehicle, duration, cancellationToken))
+        if (await _rentalRepository.IsOverlappingAsync(vehicle, duration, cancellationToken))
         {
             return Result.Failure<Guid>(RentalErrors.Overlap);
         }
@@ -73,7 +73,7 @@ internal sealed class ReserveRentalCommandHandler : ICommandHandler<ReserveRenta
 
         try
         {
-            Result<Domain.Rentals.Rental> locacaoResult = Domain.Rentals.Rental.Reserve(
+            Result<Rental> rentalResult = Rental.Reserve(
                 user.Id,
                 user.DriversLicense,
                 vehicle,
@@ -82,16 +82,16 @@ internal sealed class ReserveRentalCommandHandler : ICommandHandler<ReserveRenta
                 plan.Value,
                 _dateTimeProvider.UtcNow);
 
-            if (locacaoResult.IsFailure)
+            if (rentalResult.IsFailure)
             {
-                return Result.Failure<Guid>(locacaoResult.Error);
+                return Result.Failure<Guid>(rentalResult.Error);
             }
 
-            _locacaoRepository.Add(locacaoResult.Value);
+            _rentalRepository.Add(rentalResult.Value);
 
             await _unitOfWork.SaveChangesAsync(cancellationToken);
 
-            return locacaoResult.Value.Id;
+            return rentalResult.Value.Id;
         }
         catch (ConcurrencyException)
         {

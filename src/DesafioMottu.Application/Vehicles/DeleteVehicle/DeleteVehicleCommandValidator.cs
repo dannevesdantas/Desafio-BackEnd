@@ -1,11 +1,11 @@
 ﻿using FluentValidation;
 
-namespace DesafioMottu.Application.Motorcycles.DeleteVehicle;
+namespace DesafioMottu.Application.Vehicles.DeleteVehicle;
 
 internal class DeleteVehicleCommandValidator : AbstractValidator<DeleteVehicleCommand>
 {
     public DeleteVehicleCommandValidator()
     {
-        RuleFor(c => c.MotoId).NotEmpty();
+        RuleFor(c => c.VehicleId).NotEmpty();
     }
 }

@@ -1,23 +1,24 @@
 ﻿using Asp.Versioning;
-using DesafioMottu.Application.Motorcycles.DeleteVehicle;
-using DesafioMottu.Application.Motorcycles.RegisterVehicle;
-using DesafioMottu.Application.Motorcycles.SearchVehicles;
-using DesafioMottu.Application.Motorcycles.UpdateVehicle;
+using DesafioMottu.Application.Vehicles.DeleteVehicle;
+using DesafioMottu.Application.Vehicles.RegisterVehicle;
+using DesafioMottu.Application.Vehicles.SearchVehicles;
+using DesafioMottu.Application.Vehicles.UpdateVehicle;
 using DesafioMottu.Domain.Abstractions;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Swashbuckle.AspNetCore.Annotations;
 
-namespace DesafioMottu.Api.Controllers.Motos;
+namespace DesafioMottu.Api.Controllers.Vehicles;
 
 [ApiController]
 [ApiVersionNeutral]
+[Tags("Motos")]
 [Route("motos")]
-public class MotosController : ControllerBase
+public class VehiclesController : ControllerBase
 {
     private readonly ISender _sender;
 
-    public MotosController(ISender sender)
+    public VehiclesController(ISender sender)
     {
         _sender = sender;
     }

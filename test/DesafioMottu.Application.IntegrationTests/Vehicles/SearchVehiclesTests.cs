@@ -1,5 +1,5 @@
 ﻿using DesafioMottu.Application.IntegrationTests.Infrastructure;
-using DesafioMottu.Application.Motorcycles.SearchVehicles;
+using DesafioMottu.Application.Vehicles.SearchVehicles;
 using DesafioMottu.Domain.Abstractions;
 using FluentAssertions;
 
@@ -13,10 +13,10 @@ public class SearchVehiclesTests : BaseIntegrationTest
     }
 
     [Fact]
-    public async Task SearchApartments_ShouldReturnEmptyList_WhenLicensePlateInvalid()
+    public async Task SearchVehicles_ShouldReturnEmptyList_WhenLicensePlateNumberInvalid()
     {
         // Arrange
-        string invalidLicensePlate = "blablabla";
+        string invalidLicensePlate = "this is not a valid license plate number";
         var query = new SearchVehicleQuery(invalidLicensePlate);
 
         // Act
@@ -28,7 +28,7 @@ public class SearchVehiclesTests : BaseIntegrationTest
     }
 
     [Fact]
-    public async Task SearchApartments_ShouldReturnApartments_WhenDateRangeIsValid()
+    public async Task SearchVehicles_ShouldReturnVehicles_WhenLicensePlateNumberIsValid()
     {
         // Arrange
         var query = new SearchVehicleQuery(null);

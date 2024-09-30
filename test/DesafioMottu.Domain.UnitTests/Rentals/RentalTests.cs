@@ -13,7 +13,7 @@ namespace DesafioMottu.Domain.UnitTests.Rentals;
 public class RentalTests : BaseTest
 {
     [Fact]
-    public void Reserve_Should_RaiseBookingReservedDomainEvent()
+    public void Rental_Should_RaiseVehicleRentedDomainEvent()
     {
         // Arrange
         var user = User.Create(UserData.Name, UserData.Cnpj, UserData.BirthDate);
@@ -25,16 +25,16 @@ public class RentalTests : BaseTest
         Vehicle vehicle = VehicleData.Create();
 
         // Act
-        var bookingResult = Rental.Reserve(user.Id, driversLicense, vehicle, duration, predictedEndDate, plan, DateTime.UtcNow);
+        var rentalResult = Rental.Reserve(user.Id, driversLicense, vehicle, duration, predictedEndDate, plan, DateTime.UtcNow);
 
         // Assert
-        RentalReservedDomainEvent bookingReservedDomainEvent = AssertDomainEventWasPublished<RentalReservedDomainEvent>(bookingResult.Value);
+        VehicleRentedDomainEvent vehicleRentedDomainEvent = AssertDomainEventWasPublished<VehicleRentedDomainEvent>(rentalResult.Value);
 
-        bookingReservedDomainEvent.LocacaoId.Should().Be(bookingResult.Value.Id);
+        vehicleRentedDomainEvent.RentalId.Should().Be(rentalResult.Value.Id);
     }
 
     [Fact]
-    public void Reserve_Should_ReturnFailure_WhenDriversLicenseNotMeetLegalRequirements()
+    public void Rental_Should_ReturnFailure_WhenDriversLicenseNotMeetLegalRequirements()
     {
         // Arrange
         var user = User.Create(UserData.Name, UserData.Cnpj, UserData.BirthDate);
@@ -47,9 +47,9 @@ public class RentalTests : BaseTest
         Vehicle vehicle = VehicleData.Create();
 
         // Act
-        Result<Rental> bookingResult = Rental.Reserve(user.Id, driversLicense, vehicle, duration, predictedEndDate, plan, DateTime.UtcNow);
+        Result<Rental> rentalResult = Rental.Reserve(user.Id, driversLicense, vehicle, duration, predictedEndDate, plan, DateTime.UtcNow);
 
         // Assert
-        bookingResult.IsFailure.Should().BeTrue();
+        rentalResult.IsFailure.Should().BeTrue();
     }
 }

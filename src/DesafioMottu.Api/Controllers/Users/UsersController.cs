@@ -8,16 +8,17 @@ using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Swashbuckle.AspNetCore.Annotations;
 
-namespace DesafioMottu.Api.Controllers.Entregadores;
+namespace DesafioMottu.Api.Controllers.Users;
 
 [ApiController]
 [ApiVersionNeutral]
+[Tags("Entregadores")]
 [Route("entregadores")]
-public class EntregadoresController : ControllerBase
+public class UsersController : ControllerBase
 {
     private readonly ISender _sender;
 
-    public EntregadoresController(ISender sender)
+    public UsersController(ISender sender)
     {
         _sender = sender;
     }
@@ -28,11 +29,11 @@ public class EntregadoresController : ControllerBase
         RegisterUserRequest request,
         CancellationToken cancellationToken)
     {
-        Result<List<char>> licenseTypesResult = ParseDriversLicenseTypes(request.tipo_cnh);
+        Result<List<char>> licenseClasses = ParseDriversLicenseClasses(request.tipo_cnh);
 
-        if (licenseTypesResult.IsFailure)
+        if (licenseClasses.IsFailure)
         {
-            return BadRequest(licenseTypesResult.Error);
+            return BadRequest(licenseClasses.Error);
         }
 
         Image? imagemCnh = null;
@@ -47,7 +48,7 @@ public class EntregadoresController : ControllerBase
             request.cnpj,
             request.data_nascimento,
             request.numero_cnh,
-            licenseTypesResult.Value,
+            licenseClasses.Value,
             imagemCnh);
 
         Result<Guid> result = await _sender.Send(command, cancellationToken);
@@ -86,23 +87,23 @@ public class EntregadoresController : ControllerBase
         return Ok(result.Value);
     }
 
-    private static Result<List<char>> ParseDriversLicenseTypes(string tipoCnh)
+    private static Result<List<char>> ParseDriversLicenseClasses(string tipoCnh)
     {
         const char Separator = '+';
-        var licenseTypes = new List<char>();
+        var licenseClasses = new List<char>();
         string[] tokens = tipoCnh.Trim().Split(Separator).ToArray();
         foreach (string token in tokens)
         {
             if (token.Length == 1)
             {
-                licenseTypes.Add(Convert.ToChar(token));
+                licenseClasses.Add(Convert.ToChar(token));
             }
             else
             {
-                return Result.Failure<List<char>>(DriversLicenseErrors.InvalidLicenseType);
+                return Result.Failure<List<char>>(DriversLicenseErrors.InvalidLicenseClass);
             }
         }
-        return Result.Success(licenseTypes);
+        return Result.Success(licenseClasses);
     }
 
     private static Image LoadImage(string base64String)

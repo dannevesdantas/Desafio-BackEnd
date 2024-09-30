@@ -1,6 +1,6 @@
 ﻿using DesafioMottu.Application.Abstractions.Clock;
 using DesafioMottu.Application.Exceptions;
-using DesafioMottu.Application.Rentals.ReserveRental;
+using DesafioMottu.Application.Rentals.RentVehicle;
 using DesafioMottu.Application.UnitTests.Users;
 using DesafioMottu.Application.UnitTests.Vehicles;
 using DesafioMottu.Domain.Abstractions;
@@ -18,36 +18,36 @@ namespace DesafioMottu.Application.UnitTests.Rentals;
 public class ReserveRentalTests
 {
     private static readonly DateTime UtcNow = DateTime.UtcNow;
-    private static readonly ReserveRentalCommand Command = new(Guid.NewGuid(),
+    private static readonly RentVehicleCommand Command = new(Guid.NewGuid(),
         Guid.NewGuid(),
         new DateTime(2024, 1, 1),
         new DateTime(2024, 1, 10),
         new DateTime(2024, 1, 10),
         7);
 
-    private readonly ReserveRentalCommandHandler _handler;
+    private readonly RentVehicleCommandHandler _handler;
     private readonly IUserRepository _userRepositoryMock;
     private readonly IDriversLicenseRepository _driversLicenseRepositoryMock;
-    private readonly IVehicleRepository _apartmentRepositoryMock;
-    private readonly IRentalRepository _bookingRepositoryMock;
+    private readonly IVehicleRepository _vehicleRepositoryMock;
+    private readonly IRentalRepository _rentalRepositoryMock;
     private readonly IUnitOfWork _unitOfWorkMock;
 
     public ReserveRentalTests()
     {
         _userRepositoryMock = Substitute.For<IUserRepository>();
         _driversLicenseRepositoryMock = Substitute.For<IDriversLicenseRepository>();
-        _apartmentRepositoryMock = Substitute.For<IVehicleRepository>();
-        _bookingRepositoryMock = Substitute.For<IRentalRepository>();
+        _vehicleRepositoryMock = Substitute.For<IVehicleRepository>();
+        _rentalRepositoryMock = Substitute.For<IRentalRepository>();
         _unitOfWorkMock = Substitute.For<IUnitOfWork>();
 
         IDateTimeProvider dateTimeProviderMock = Substitute.For<IDateTimeProvider>();
         dateTimeProviderMock.UtcNow.Returns(UtcNow);
 
-        _handler = new ReserveRentalCommandHandler(
+        _handler = new RentVehicleCommandHandler(
             _userRepositoryMock,
             _driversLicenseRepositoryMock,
-            _apartmentRepositoryMock,
-            _bookingRepositoryMock,
+            _vehicleRepositoryMock,
+            _rentalRepositoryMock,
             _unitOfWorkMock,
             dateTimeProviderMock);
     }
@@ -68,7 +68,7 @@ public class ReserveRentalTests
     }
 
     [Fact]
-    public async Task Handle_Should_ReturnFailure_WhenApartmentIsNull()
+    public async Task Handle_Should_ReturnFailure_WhenVehicleIsNull()
     {
         // Arrange
         User user = UserData.Create();
@@ -83,8 +83,8 @@ public class ReserveRentalTests
             .GetByUserIdAsync(Command.UserId, Arg.Any<CancellationToken>())
             .Returns(driversLicense);
 
-        _apartmentRepositoryMock
-            .GetByIdAsync(Command.MotoId, Arg.Any<CancellationToken>())
+        _vehicleRepositoryMock
+            .GetByIdAsync(Command.VehicleId, Arg.Any<CancellationToken>())
             .Returns((Vehicle?)null);
 
         // Act
@@ -95,13 +95,13 @@ public class ReserveRentalTests
     }
 
     [Fact]
-    public async Task Handle_Should_ReturnFailure_WhenApartmentIsBooked()
+    public async Task Handle_Should_ReturnFailure_WhenVehicleIsRented()
     {
         // Arrange
         User user = UserData.Create();
         DriversLicense driversLicense = DriversLicenseData.Create(user.Id);
         user.SetDriversLicense(driversLicense);
-        Vehicle motorcycle = VehicleData.Create();
+        Vehicle vehicle = VehicleData.Create();
         var duration = DateRange.Create(Command.StartDate, Command.EndDate);
 
         _userRepositoryMock
@@ -112,12 +112,12 @@ public class ReserveRentalTests
             .GetByUserIdAsync(Command.UserId, Arg.Any<CancellationToken>())
             .Returns(driversLicense);
 
-        _apartmentRepositoryMock
-            .GetByIdAsync(Command.MotoId, Arg.Any<CancellationToken>())
-            .Returns(motorcycle);
+        _vehicleRepositoryMock
+            .GetByIdAsync(Command.VehicleId, Arg.Any<CancellationToken>())
+            .Returns(vehicle);
 
-        _bookingRepositoryMock
-            .IsOverlappingAsync(motorcycle, duration, Arg.Any<CancellationToken>())
+        _rentalRepositoryMock
+            .IsOverlappingAsync(vehicle, duration, Arg.Any<CancellationToken>())
             .Returns(true);
 
         // Act
@@ -134,7 +134,7 @@ public class ReserveRentalTests
         User user = UserData.Create();
         DriversLicense driversLicense = DriversLicenseData.Create(user.Id);
         user.SetDriversLicense(driversLicense);
-        Vehicle motorcycle = VehicleData.Create();
+        Vehicle vehicle = VehicleData.Create();
         var duration = DateRange.Create(Command.StartDate, Command.EndDate);
 
         _userRepositoryMock
@@ -145,12 +145,12 @@ public class ReserveRentalTests
             .GetByUserIdAsync(Command.UserId, Arg.Any<CancellationToken>())
             .Returns(driversLicense);
 
-        _apartmentRepositoryMock
-            .GetByIdAsync(Command.MotoId, Arg.Any<CancellationToken>())
-            .Returns(motorcycle);
+        _vehicleRepositoryMock
+            .GetByIdAsync(Command.VehicleId, Arg.Any<CancellationToken>())
+            .Returns(vehicle);
 
-        _bookingRepositoryMock
-            .IsOverlappingAsync(motorcycle, duration, Arg.Any<CancellationToken>())
+        _rentalRepositoryMock
+            .IsOverlappingAsync(vehicle, duration, Arg.Any<CancellationToken>())
             .Returns(false);
 
         _unitOfWorkMock
@@ -165,13 +165,13 @@ public class ReserveRentalTests
     }
 
     [Fact]
-    public async Task Handle_Should_ReturnSuccess_WhenBookingIsReserved()
+    public async Task Handle_Should_ReturnSuccess_WhenRented()
     {
         // Arrange
         User user = UserData.Create();
         DriversLicense driversLicense = DriversLicenseData.Create(user.Id);
         user.SetDriversLicense(driversLicense);
-        Vehicle motorcycle = VehicleData.Create();
+        Vehicle vehicle = VehicleData.Create();
         var duration = DateRange.Create(Command.StartDate, Command.EndDate);
 
         _userRepositoryMock
@@ -182,12 +182,12 @@ public class ReserveRentalTests
             .GetByUserIdAsync(Command.UserId, Arg.Any<CancellationToken>())
             .Returns(driversLicense);
 
-        _apartmentRepositoryMock
-            .GetByIdAsync(Command.MotoId, Arg.Any<CancellationToken>())
-            .Returns(motorcycle);
+        _vehicleRepositoryMock
+            .GetByIdAsync(Command.VehicleId, Arg.Any<CancellationToken>())
+            .Returns(vehicle);
 
-        _bookingRepositoryMock
-            .IsOverlappingAsync(motorcycle, duration, Arg.Any<CancellationToken>())
+        _rentalRepositoryMock
+            .IsOverlappingAsync(vehicle, duration, Arg.Any<CancellationToken>())
             .Returns(false);
 
         // Act
@@ -198,13 +198,13 @@ public class ReserveRentalTests
     }
 
     [Fact]
-    public async Task Handle_Should_CallRepository_WhenBookingIsReserved()
+    public async Task Handle_Should_CallRepository_WhenRented()
     {
         // Arrange
         User user = UserData.Create();
         DriversLicense driversLicense = DriversLicenseData.Create(user.Id);
         user.SetDriversLicense(driversLicense);
-        Vehicle motorcycle = VehicleData.Create();
+        Vehicle vehicle = VehicleData.Create();
         var duration = DateRange.Create(Command.StartDate, Command.EndDate);
 
         _userRepositoryMock
@@ -215,17 +215,17 @@ public class ReserveRentalTests
             .GetByUserIdAsync(Command.UserId, Arg.Any<CancellationToken>())
             .Returns(driversLicense);
 
-        _apartmentRepositoryMock
-            .GetByIdAsync(Command.MotoId, Arg.Any<CancellationToken>())
-            .Returns(motorcycle);
-        _bookingRepositoryMock
-            .IsOverlappingAsync(motorcycle, duration, Arg.Any<CancellationToken>())
+        _vehicleRepositoryMock
+            .GetByIdAsync(Command.VehicleId, Arg.Any<CancellationToken>())
+            .Returns(vehicle);
+        _rentalRepositoryMock
+            .IsOverlappingAsync(vehicle, duration, Arg.Any<CancellationToken>())
             .Returns(false);
 
         // Act
         Result<Guid> result = await _handler.Handle(Command, default);
 
         // Assert
-        _bookingRepositoryMock.Received(1).Add(Arg.Is<Domain.Rentals.Rental>(b => b.Id == result.Value));
+        _rentalRepositoryMock.Received(1).Add(Arg.Is<Rental>(b => b.Id == result.Value));
     }
 }

@@ -1,6 +1,6 @@
 using System.Net;
 using System.Net.Http.Json;
-using DesafioMottu.Api.Controllers.Entregadores;
+using DesafioMottu.Api.Controllers.Users;
 using DesafioMottu.Api.FunctionalTests.Infrastructure;
 using FluentAssertions;
 
@@ -16,17 +16,17 @@ public class RegisterUserTests : BaseFunctionalTest
     public static TheoryData<string, string, DateOnly, string, string> Cases =
         new()
         {
-            { "first last", "00.000.000/0000-00", new DateOnly(2500, 1, 1), "00000000000", "X" },
-            { "first last", "00.000.000/0000-00", new DateOnly(2100, 09, 15), "00000000000", "Y" },
-            { "first last", "00.000.000/0000-00", new DateOnly(2319, 10, 2), "00000000000", "X" },
-            { "first last", "00.000.000/0000-00", new DateOnly(2700, 3, 20), "00000000000", "Z" },
-            { "last", "00.000.000/0000-00", new DateOnly(2900, 2, 28), "00000000000", "X" },
-            { "first", "00.000.000/0000-00", new DateOnly(2150, 6, 12), "00000000000", "Y" },
-            { "first last", "00.000.000/0000-00", new DateOnly(2200, 8, 2), "00000000000", "Z" },
-            { "first last", "00.000.000/0000-00", new DateOnly(2099, 4, 10), "00000000000", "X" },
-            { "first last", "00.000.000/0000-00", new DateOnly(2100, 4, 5), "00000000000", "@" },
-            { "first last", "00.000.000/0000-00", new DateOnly(2547, 2, 23), "00000000000", "*" },
-            { "first last", "00.000.000/0000-00", new DateOnly(2239, 8, 24), "00000000000", "W" }
+            { "Fulano Silva", "00000000000000", new DateOnly(2500, 1, 1), "00000000000", "X" },
+            { "Fulano Silva", "00000000000000", new DateOnly(2100, 09, 15), "00000000000", "Y" },
+            { "Fulano Silva", "00000000000000", new DateOnly(2319, 10, 2), "00000000000", "X" },
+            { "Fulano Silva", "00000000000000", new DateOnly(2700, 3, 20), "00000000000", "Z++" },
+            { "Silva", "00000000000000", new DateOnly(2900, 2, 28), "00000000000", "X" },
+            { "Fulano", "00000000000000", new DateOnly(2150, 6, 12), "00000000000", "Y" },
+            { "Fulano Silva", "00000000000000", new DateOnly(2200, 8, 2), "00000000000", "Z" },
+            { "Fulano Silva", "00000000000000", new DateOnly(2099, 4, 10), "00000000000", "X+3" },
+            { "Fulano Silva", "00000000000000", new DateOnly(2100, 4, 5), "00000000000", "@" },
+            { "Fulano Silva", "00000000000000", new DateOnly(2547, 2, 23), "00000000000", "*+A" },
+            { "Fulano Silva", "00000000000000", new DateOnly(2239, 8, 24), "00000000000", "W" }
         };
 
     [Theory]
@@ -36,10 +36,10 @@ public class RegisterUserTests : BaseFunctionalTest
         string cnpj,
         DateOnly birthDate,
         string driversLicenseNumber,
-        string driversLicenseTypes)
+        string driversLicenseClasses)
     {
         // Arrange
-        var request = new RegisterUserRequest(name, cnpj, birthDate, driversLicenseNumber, driversLicenseTypes, null);
+        var request = new RegisterUserRequest(name, cnpj, birthDate, driversLicenseNumber, driversLicenseClasses, null);
 
         // Act
         HttpResponseMessage response = await HttpClient.PostAsJsonAsync("entregadores", request);

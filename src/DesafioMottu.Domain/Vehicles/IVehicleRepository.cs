@@ -6,7 +6,7 @@ public interface IVehicleRepository
 
     Task<Vehicle?> GetByLicensePlateAsync(LicensePlate licensePlate, CancellationToken cancellationToken = default);
 
-    void Add(Vehicle moto);
+    void Add(Vehicle vehicle);
 
-    void Delete(Vehicle moto);
+    void Delete(Vehicle vehicle);
 }

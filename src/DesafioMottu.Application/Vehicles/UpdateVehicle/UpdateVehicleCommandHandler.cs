@@ -2,7 +2,7 @@
 using DesafioMottu.Domain.Abstractions;
 using DesafioMottu.Domain.Vehicles;
 
-namespace DesafioMottu.Application.Motorcycles.UpdateVehicle;
+namespace DesafioMottu.Application.Vehicles.UpdateVehicle;
 
 internal sealed class UpdateVehicleCommandHandler : ICommandHandler<UpdateVehicleCommand, Guid>
 {
@@ -10,25 +10,25 @@ internal sealed class UpdateVehicleCommandHandler : ICommandHandler<UpdateVehicl
     private readonly IUnitOfWork _unitOfWork;
 
     public UpdateVehicleCommandHandler(
-        IVehicleRepository motoRepository,
+        IVehicleRepository vehicleRepository,
         IUnitOfWork unitOfWork)
     {
-        _vehicleRepository = motoRepository;
+        _vehicleRepository = vehicleRepository;
         _unitOfWork = unitOfWork;
     }
 
     public async Task<Result<Guid>> Handle(UpdateVehicleCommand request, CancellationToken cancellationToken)
     {
-        Vehicle? vehicle = await _vehicleRepository.GetByIdAsync(request.MotoId, cancellationToken);
+        Vehicle? vehicle = await _vehicleRepository.GetByIdAsync(request.VechicleId, cancellationToken);
 
         if (vehicle is null)
         {
             return Result.Failure<Guid>(VehicleErrors.NotFound);
         }
 
-        Vehicle? motoWithSameLicensePlate = await _vehicleRepository.GetByLicensePlateAsync(new LicensePlate(request.LicensePlateNumber), cancellationToken);
+        Vehicle? vehicleWithSameLicensePlate = await _vehicleRepository.GetByLicensePlateAsync(new LicensePlate(request.LicensePlateNumber), cancellationToken);
 
-        if (motoWithSameLicensePlate is not null)
+        if (vehicleWithSameLicensePlate is not null)
         {
             return Result.Failure<Guid>(VehicleErrors.PlateAlreadyTaken);
         }

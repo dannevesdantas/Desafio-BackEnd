@@ -1,6 +1,6 @@
-﻿namespace DesafioMottu.Api.Controllers.Locacao;
+﻿namespace DesafioMottu.Api.Controllers.Rentals;
 
-public sealed record ReserveRentalRequest(
+public sealed record RentVehicleRequest(
     Guid entregador_id,
     Guid moto_id,
     DateTime data_inicio,

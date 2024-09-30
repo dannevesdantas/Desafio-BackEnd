@@ -20,7 +20,7 @@ internal sealed class RegisterUserCommandValidator : AbstractValidator<RegisterU
             .Length(11)
             .Matches("^[0-9]*$");
 
-        RuleFor(c => c.DriversLicenseTypes)
+        RuleFor(c => c.DriversLicenseClasses)
             .NotEmpty()
             .Must(types => types.TrueForAll(type => new List<char>() { 'A', 'B' }.Contains(type)));
 

@@ -18,10 +18,10 @@ internal static class SeedDataExtensions
 
         var faker = new Faker();
 
-        List<object> motos = new();
+        List<object> vehicles = new();
         for (int i = 0; i < 100; i++)
         {
-            motos.Add(new
+            vehicles.Add(new
             {
                 Id = Guid.NewGuid(),
                 Model = faker.PickRandom(new string[] { "Mottu Sport", "Mottu E", "Mottu Pop" }),
@@ -37,6 +37,6 @@ internal static class SeedDataExtensions
             VALUES(@Id, @Model, @Year, @LicensePlate, @LastRentedOnUtc);
             """;
 
-        connection.Execute(sql, motos);
+        connection.Execute(sql, vehicles);
     }
 }

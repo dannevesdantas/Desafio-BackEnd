@@ -2,4 +2,4 @@
 
 namespace DesafioMottu.Domain.Rentals.Events;
 
-public sealed record RentalReturnedDomainEvent(Guid LocacaoId) : IDomainEvent;
+public sealed record VehicleReturnedDomainEvent(Guid RentalId) : IDomainEvent;

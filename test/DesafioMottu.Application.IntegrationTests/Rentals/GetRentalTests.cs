@@ -8,7 +8,7 @@ namespace DesafioMottu.Application.IntegrationTests.Rentals;
 
 public class GetRentalTests : BaseIntegrationTest
 {
-    private static readonly Guid BookingId = Guid.NewGuid();
+    private static readonly Guid RentalId = Guid.NewGuid();
 
     public GetRentalTests(IntegrationTestWebAppFactory factory)
         : base(factory)
@@ -16,10 +16,10 @@ public class GetRentalTests : BaseIntegrationTest
     }
 
     [Fact]
-    public async Task GetBooking_ShouldReturnFailure_WhenBookingIsNotFound()
+    public async Task GetRental_ShouldReturnFailure_WhenRentalIsNotFound()
     {
         // Arrange
-        var query = new GetRentalQuery(BookingId);
+        var query = new GetRentalQuery(RentalId);
 
         // Act
         Result<RentalResponse> result = await Sender.Send(query);

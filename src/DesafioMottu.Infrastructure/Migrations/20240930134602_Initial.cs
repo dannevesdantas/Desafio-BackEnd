@@ -87,7 +87,7 @@ namespace DesafioMottu.Infrastructure.Migrations
                 {
                     id = table.Column<Guid>(type: "uuid", nullable: false),
                     user_id = table.Column<Guid>(type: "uuid", nullable: false),
-                    moto_id = table.Column<Guid>(type: "uuid", nullable: false),
+                    vehicle_id = table.Column<Guid>(type: "uuid", nullable: false),
                     duration_start = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
                     duration_end = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
                     predicted_end_date = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
@@ -111,8 +111,8 @@ namespace DesafioMottu.Infrastructure.Migrations
                         principalColumn: "id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "fk_rentals_vehicle_moto_id",
-                        column: x => x.moto_id,
+                        name: "fk_rentals_vehicle_vehicle_id",
+                        column: x => x.vehicle_id,
                         principalTable: "vehicles",
                         principalColumn: "id",
                         onDelete: ReferentialAction.Cascade);
@@ -131,14 +131,14 @@ namespace DesafioMottu.Infrastructure.Migrations
                 unique: true);
 
             migrationBuilder.CreateIndex(
-                name: "ix_rentals_moto_id",
-                table: "rentals",
-                column: "moto_id");
-
-            migrationBuilder.CreateIndex(
                 name: "ix_rentals_user_id",
                 table: "rentals",
                 column: "user_id");
+
+            migrationBuilder.CreateIndex(
+                name: "ix_rentals_vehicle_id",
+                table: "rentals",
+                column: "vehicle_id");
 
             migrationBuilder.CreateIndex(
                 name: "ix_users_cnpj",

@@ -6,13 +6,13 @@ public static class DriversLicenseErrors
 {
     public static readonly Error NotFound = new(
         "DriversLicense.NotFound",
-        "The driver's license specified identifier was not found");
+        "A carteira de motorista não foi encontrado");
 
     public static readonly Error AlreadyExists = new(
         "DriversLicense.AlreadyExists",
-        "The driver's license already exists");
+        "Essa carteira de motorista já existe");
 
-    public static readonly Error InvalidLicenseType = new(
-        "DriversLicense.InvalidLicenseType",
-        "The provided driver's license type is invalid");
+    public static readonly Error InvalidLicenseClass = new(
+        "DriversLicense.InvalidLicenseClass",
+        "O(s) tipo(s) de habilitação fornecidos são inválidos");
 }

@@ -1,14 +1,14 @@
 ﻿using FluentValidation;
 
-namespace DesafioMottu.Application.Rentals.ReserveRental;
+namespace DesafioMottu.Application.Rentals.RentVehicle;
 
-internal class ReserveRentalCommandValidator : AbstractValidator<ReserveRentalCommand>
+internal class RentVehicleCommandValidator : AbstractValidator<RentVehicleCommand>
 {
-    public ReserveRentalCommandValidator()
+    public RentVehicleCommandValidator()
     {
         RuleFor(c => c.UserId).NotEmpty();
 
-        RuleFor(c => c.MotoId).NotEmpty();
+        RuleFor(c => c.VehicleId).NotEmpty();
 
         RuleFor(c => c.StartDate).NotEmpty();
 

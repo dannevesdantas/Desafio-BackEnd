@@ -5,7 +5,7 @@ using DesafioMottu.Application.Abstractions.Messaging;
 using DesafioMottu.Domain.Abstractions;
 using DesafioMottu.Domain.Vehicles;
 
-namespace DesafioMottu.Application.Motorcycles.SearchVehicles;
+namespace DesafioMottu.Application.Vehicles.SearchVehicles;
 
 internal sealed class SearchVehicleByIdQueryHandler : IQueryHandler<SearchVehicleByIdQuery, VehicleResponse>
 {
@@ -36,7 +36,7 @@ internal sealed class SearchVehicleByIdQueryHandler : IQueryHandler<SearchVehicl
                 sql,
                 new
                 {
-                    Id = request.MotoId
+                    Id = request.VehicleId
                 });
 
         if (vehicle is null)

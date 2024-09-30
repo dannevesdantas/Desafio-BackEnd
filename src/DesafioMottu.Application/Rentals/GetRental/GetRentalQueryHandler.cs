@@ -27,7 +27,7 @@ internal sealed class GetRentalQueryHandler : IQueryHandler<GetRentalQuery, Rent
                 plan_daily_price AS valor_diaria,
                 total_price_amount AS valor_total,
                 user_id AS entregador_id,
-                moto_id AS moto_id,
+                vehicle_id AS moto_id,
                 duration_start AS data_inicio,
                 duration_end AS data_termino,
                 predicted_end_date AS data_previsao_termino,
@@ -40,7 +40,7 @@ internal sealed class GetRentalQueryHandler : IQueryHandler<GetRentalQuery, Rent
             sql,
             new
             {
-                RentalId = request.LocacaoId
+                RentalId = request.RentalId
             });
 
         if (rental is null)

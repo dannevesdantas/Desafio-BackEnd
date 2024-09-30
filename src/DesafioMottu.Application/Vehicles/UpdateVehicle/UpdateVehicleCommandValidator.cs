@@ -1,6 +1,6 @@
 ﻿using FluentValidation;
 
-namespace DesafioMottu.Application.Motorcycles.UpdateVehicle;
+namespace DesafioMottu.Application.Vehicles.UpdateVehicle;
 
 internal class UpdateVehicleCommandValidator : AbstractValidator<UpdateVehicleCommand>
 {

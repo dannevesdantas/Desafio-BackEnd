@@ -2,9 +2,9 @@
 
 namespace DesafioMottu.Application.Rentals.GetRental;
 
-public sealed record GetRentalQuery(Guid LocacaoId) : ICachedQuery<RentalResponse>
+public sealed record GetRentalQuery(Guid RentalId) : ICachedQuery<RentalResponse>
 {
-    public string CacheKey => $"bookings-{LocacaoId}";
+    public string CacheKey => $"rental-{RentalId}";
 
     public TimeSpan? Expiration => null;
 }

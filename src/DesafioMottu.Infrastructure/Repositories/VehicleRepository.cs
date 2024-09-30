@@ -3,9 +3,9 @@ using Microsoft.EntityFrameworkCore;
 
 namespace DesafioMottu.Infrastructure.Repositories;
 
-internal sealed class MotoRepository : Repository<Vehicle>, IVehicleRepository
+internal sealed class VehicleRepository : Repository<Vehicle>, IVehicleRepository
 {
-    public MotoRepository(ApplicationDbContext dbContext)
+    public VehicleRepository(ApplicationDbContext dbContext)
         : base(dbContext)
     {
     }

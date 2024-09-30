@@ -1,5 +1,5 @@
 ﻿using DesafioMottu.Application.Abstractions.Messaging;
 
-namespace DesafioMottu.Application.Motorcycles.DeleteVehicle;
+namespace DesafioMottu.Application.Vehicles.DeleteVehicle;
 
-public sealed record DeleteVehicleCommand(Guid MotoId) : ICommand<Guid>;
+public sealed record DeleteVehicleCommand(Guid VehicleId) : ICommand<Guid>;

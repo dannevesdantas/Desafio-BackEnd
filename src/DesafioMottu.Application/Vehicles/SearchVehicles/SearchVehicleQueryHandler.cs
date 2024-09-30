@@ -4,7 +4,7 @@ using DesafioMottu.Application.Abstractions.Data;
 using DesafioMottu.Application.Abstractions.Messaging;
 using DesafioMottu.Domain.Abstractions;
 
-namespace DesafioMottu.Application.Motorcycles.SearchVehicles;
+namespace DesafioMottu.Application.Vehicles.SearchVehicles;
 
 internal sealed class SearchVehicleQueryHandler
     : IQueryHandler<SearchVehicleQuery, IReadOnlyList<VehicleResponse>>
@@ -31,7 +31,7 @@ internal sealed class SearchVehicleQueryHandler
                 @LicensePlateNumber is NULL OR v.license_plate = @LicensePlateNumber
             """;
 
-        IEnumerable<VehicleResponse> motos = await connection
+        IEnumerable<VehicleResponse> vehicles = await connection
             .QueryAsync<VehicleResponse>(
                 sql,
                 new
@@ -39,6 +39,6 @@ internal sealed class SearchVehicleQueryHandler
                     LicensePlateNumber = request.LicensePlateNumber
                 });
 
-        return motos.ToList();
+        return vehicles.ToList();
     }
 }

@@ -1,4 +1,4 @@
-﻿namespace DesafioMottu.Application.Motorcycles.SearchVehicles;
+﻿namespace DesafioMottu.Application.Vehicles.SearchVehicles;
 
 public sealed class VehicleResponse
 {

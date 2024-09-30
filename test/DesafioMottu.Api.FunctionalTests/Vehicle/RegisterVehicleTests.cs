@@ -1,6 +1,6 @@
 using System.Net;
 using System.Net.Http.Json;
-using DesafioMottu.Api.Controllers.Motos;
+using DesafioMottu.Api.Controllers.Vehicles;
 using DesafioMottu.Api.FunctionalTests.Infrastructure;
 using FluentAssertions;
 

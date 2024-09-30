@@ -7,23 +7,23 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace DesafioMottu.Infrastructure.Configurations;
 
-internal sealed class LocacaoConfiguration : IEntityTypeConfiguration<Rental>
+internal sealed class RentalConfiguration : IEntityTypeConfiguration<Rental>
 {
     public void Configure(EntityTypeBuilder<Rental> builder)
     {
         builder.ToTable("rentals");
 
-        builder.HasKey(locacao => locacao.Id);
+        builder.HasKey(rental => rental.Id);
 
-        builder.OwnsOne(locacao => locacao.Duration);
+        builder.OwnsOne(rental => rental.Duration);
 
-        builder.Property(locacao => locacao.PredictedEndDate);
+        builder.Property(rental => rental.PredictedEndDate);
 
-        builder.Property(locacao => locacao.ReturnedOnUtc);
+        builder.Property(rental => rental.ReturnedOnUtc);
 
-        builder.OwnsOne(locacao => locacao.Plan);
+        builder.OwnsOne(rental => rental.Plan);
 
-        builder.OwnsOne(locacao => locacao.TotalPrice, priceBuilder =>
+        builder.OwnsOne(rental => rental.TotalPrice, priceBuilder =>
         {
             priceBuilder.Property(money => money.Currency)
                 .HasConversion(currency => currency.Code, code => Currency.FromCode(code));
@@ -31,11 +31,11 @@ internal sealed class LocacaoConfiguration : IEntityTypeConfiguration<Rental>
 
         builder.HasOne<Vehicle>()
             .WithMany()
-            .HasForeignKey(locacao => locacao.MotoId);
+            .HasForeignKey(rental => rental.VehicleId);
 
         builder.HasOne<User>()
             .WithMany()
-            .HasForeignKey(locacao => locacao.UserId);
+            .HasForeignKey(rental => rental.UserId);
 
         builder.Property<uint>("Version").IsRowVersion();
     }

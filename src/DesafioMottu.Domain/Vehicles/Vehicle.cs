@@ -31,11 +31,11 @@ public sealed class Vehicle : Entity
 
     public static Vehicle Create(Model model, int year, LicensePlate licensePlate)
     {
-        var moto = new Vehicle(Guid.NewGuid(), model, year, licensePlate);
+        var vehicle = new Vehicle(Guid.NewGuid(), model, year, licensePlate);
 
-        moto.RaiseDomainEvent(new VehicleRegisteredDomainEvent(moto.Id));
+        vehicle.RaiseDomainEvent(new VehicleRegisteredDomainEvent(vehicle.Id));
 
-        return moto;
+        return vehicle;
     }
 
     public void SetLicensePlateNumber(string number)

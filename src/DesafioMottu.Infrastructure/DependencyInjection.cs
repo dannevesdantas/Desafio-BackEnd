@@ -63,9 +63,9 @@ public static class DependencyInjection
 
         services.AddScoped<IDriversLicenseRepository, DriversLicenseRepository>();
 
-        services.AddScoped<IVehicleRepository, MotoRepository>();
+        services.AddScoped<IVehicleRepository, VehicleRepository>();
 
-        services.AddScoped<IRentalRepository, LocacaoRepository>();
+        services.AddScoped<IRentalRepository, RentalRepository>();
 
         services.AddScoped<IUnitOfWork>(sp => sp.GetRequiredService<ApplicationDbContext>());
 

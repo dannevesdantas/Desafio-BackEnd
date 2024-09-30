@@ -1,4 +1,4 @@
-﻿namespace DesafioMottu.Api.Controllers.Entregadores;
+﻿namespace DesafioMottu.Api.Controllers.Users;
 
 public sealed record RegisterUserRequest(
     string nome,

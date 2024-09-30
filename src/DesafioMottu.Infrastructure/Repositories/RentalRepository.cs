@@ -4,33 +4,33 @@ using Microsoft.EntityFrameworkCore;
 
 namespace DesafioMottu.Infrastructure.Repositories;
 
-internal sealed class LocacaoRepository : Repository<Rental>, IRentalRepository
+internal sealed class RentalRepository : Repository<Rental>, IRentalRepository
 {
-    public LocacaoRepository(ApplicationDbContext dbContext)
+    public RentalRepository(ApplicationDbContext dbContext)
         : base(dbContext)
     {
     }
 
-    public async Task<List<Rental>> GetByMotoIdAsync(Guid motoId, CancellationToken cancellationToken = default)
+    public async Task<List<Rental>> GetByVehicleIdAsync(Guid vehicleId, CancellationToken cancellationToken = default)
     {
         return await DbContext
             .Set<Rental>()
-            .Where(locacao => locacao.MotoId == motoId)
+            .Where(rental => rental.VehicleId == vehicleId)
             .ToListAsync(cancellationToken);
     }
 
     public async Task<bool> IsOverlappingAsync(
-        Vehicle moto,
+        Vehicle vehicle,
         DateRange duration,
         CancellationToken cancellationToken = default)
     {
         return await DbContext
             .Set<Rental>()
             .AnyAsync(
-                locacao =>
-                    locacao.MotoId == moto.Id &&
-                    locacao.Duration.Start <= duration.End &&
-                    locacao.Duration.End >= duration.Start,
+                rental =>
+                    rental.VehicleId == vehicle.Id &&
+                    rental.Duration.Start <= duration.End &&
+                    rental.Duration.End >= duration.Start,
                 cancellationToken);
     }
 }
